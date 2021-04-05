@@ -13,6 +13,7 @@ using NodaTime;
 using Quartz;
 using Quartz.Impl;
 using Quartz.Logging;
+using TelusHeathPack.Activities;
 using TelusHeathPack.Configurations;
 using TelusHeathPack.Controllers;
 using TelusHeathPack.Services;
@@ -53,6 +54,7 @@ namespace TelusHeathPack
                 .AddTimerActivities(options => options.Configure(x => x.SweepInterval = Duration.FromSeconds(10)))
                 .AddEmailActivities(options => options.Bind(Configuration.GetSection("Smtp")))
                 .AddMassTransitSchedulingActivities(massTransitBuilder, options => options.Bind(Configuration.GetSection("MassTransit:RabbitMq:MessageSchedule")))
+                .AddActivity<CreatePerson>()
                 .AddWorkflow<UserTrackingWorkflow>()
                 .AddScoped<IUsers, Users>()
                 .AddSingleton(scheduler)
