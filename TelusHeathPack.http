@@ -2,20 +2,19 @@
 // https://marketplace.visualstudio.com/items?itemName=humao.rest-client
 
 
-GET http://localhost:59862/api/cart
+GET http://localhost:59862/api/user
 
 ####
 
-POST http://localhost:59862/api/cart
+POST http://localhost:59862/api/user
 Content-Type: application/json
 
 {
-    "productSku": "010-01787-10",
-    "quantity": 5
+    "alias": "did:one37:56d6048b-466c-43e9-bcfa-9fb1a0950010"
 }
 
 ####
 
-POST http://localhost:59862/api/cart/submit
+POST http://localhost:59862/api/user/submit
 
 ###

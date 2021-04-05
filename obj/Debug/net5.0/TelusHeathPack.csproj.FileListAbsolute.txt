@@ -113,3 +113,17 @@ C:\Users\fairu\Documents\GitHub\TelusHeathPack\obj\Debug\net5.0\TelusHeathPack.d
 C:\Users\fairu\Documents\GitHub\TelusHeathPack\obj\Debug\net5.0\ref\TelusHeathPack.dll
 C:\Users\fairu\Documents\GitHub\TelusHeathPack\obj\Debug\net5.0\TelusHeathPack.pdb
 C:\Users\fairu\Documents\GitHub\TelusHeathPack\obj\Debug\net5.0\TelusHeathPack.genruntimeconfig.cache
+C:\Users\fairu\Documents\GitHub\TelusHeathPack\bin\Debug\net5.0\log4net.dll
+C:\Users\fairu\Documents\GitHub\TelusHeathPack\bin\Debug\net5.0\Microsoft.Extensions.Caching.StackExchangeRedis.dll
+C:\Users\fairu\Documents\GitHub\TelusHeathPack\bin\Debug\net5.0\Microsoft.Extensions.Logging.Log4Net.AspNetCore.dll
+C:\Users\fairu\Documents\GitHub\TelusHeathPack\bin\Debug\net5.0\Microsoft.OpenApi.dll
+C:\Users\fairu\Documents\GitHub\TelusHeathPack\bin\Debug\net5.0\Pipelines.Sockets.Unofficial.dll
+C:\Users\fairu\Documents\GitHub\TelusHeathPack\bin\Debug\net5.0\Scrutor.dll
+C:\Users\fairu\Documents\GitHub\TelusHeathPack\bin\Debug\net5.0\StackExchange.Redis.dll
+C:\Users\fairu\Documents\GitHub\TelusHeathPack\bin\Debug\net5.0\Swashbuckle.AspNetCore.Filters.dll
+C:\Users\fairu\Documents\GitHub\TelusHeathPack\bin\Debug\net5.0\Swashbuckle.AspNetCore.Filters.Abstractions.dll
+C:\Users\fairu\Documents\GitHub\TelusHeathPack\bin\Debug\net5.0\Swashbuckle.AspNetCore.Swagger.dll
+C:\Users\fairu\Documents\GitHub\TelusHeathPack\bin\Debug\net5.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\Users\fairu\Documents\GitHub\TelusHeathPack\bin\Debug\net5.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+C:\Users\fairu\Documents\GitHub\TelusHeathPack\bin\Debug\net5.0\System.Diagnostics.PerformanceCounter.dll
+C:\Users\fairu\Documents\GitHub\TelusHeathPack\bin\Debug\net5.0\runtimes\win\lib\netcoreapp2.0\System.Diagnostics.PerformanceCounter.dll

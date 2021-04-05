@@ -11,18 +11,18 @@ using TelusHeathPack.Messages;
 
 namespace TelusHeathPack.Workflows
 {
-    public class CartTrackingWorkflow : IWorkflow
+    public class UserTrackingWorkflow : IWorkflow
     {
-        private readonly RabbitMqSchedulerOptions options;
+        private readonly RabbitMqSchedulerOptions _options;
 
-        public CartTrackingWorkflow(IOptions<RabbitMqSchedulerOptions> options)
+        public UserTrackingWorkflow(IOptions<RabbitMqSchedulerOptions> options)
         {
-            this.options = options.Value;
+            _options = options.Value;
         }
 
         public void Build(IWorkflowBuilder builder)
         {
-            builder.StartWith<ReceiveMassTransitMessage>(activity => activity.MessageType = typeof(CartCreated))
+            builder.StartWith<ReceiveMassTransitMessage>(activity => activity.MessageType = typeof(UserCreated))
                 .Then<SetVariable>(activity =>
                 {
                     activity.VariableName = "LastUpdateTimestamp";
@@ -34,24 +34,24 @@ namespace TelusHeathPack.Workflows
                     activity.ValueExpression = new JavaScriptExpression<bool>("false");
                 })
                 .Fork(
-                    action => action.Branches = new [] {"Item-Added", "Cart-Expired", "Order-Submitted"},
+                    action => action.Branches = new [] {"Item-Added", "User-Expired"},
                     fork =>
                     {
                         fork.When("Item-Added")
                             .Then<ScheduleSendMassTransitMessage>(
                                 activity =>
                                 {
-                                    activity.MessageType = typeof(CartExpiredEvent);
-                                    activity.EndpointAddress = new Uri($"{options.Host}/shopping_cart_state");
+                                    activity.MessageType = typeof(UserExpiredEvent);
+                                    activity.EndpointAddress = new Uri($"{_options.Host}/user_state");
                                     activity.ScheduledTime = new JavaScriptExpression<DateTime>("plus(LastUpdateTimestamp, durationFromSeconds(10)).ToDateTimeUtc()");
-                                    activity.Message = new JavaScriptExpression<CartExpiredEvent>("return { correlationId: correlationId(), cartId: correlationId() }");
+                                    activity.Message = new JavaScriptExpression<UserExpiredEvent>("return { correlationId: correlationId(), alias: correlationId() }");
                                 }).WithName("ScheduleExpire")
                             .Then<SetVariable>(activity =>
                             {
                                 activity.VariableName = "ScheduleTokenId";
                                 activity.ValueExpression = new JavaScriptExpression<bool>("lastResult()");
                             })
-                            .Then<ReceiveMassTransitMessage>(activity => activity.MessageType = typeof(CartItemAdded))
+                            .Then<ReceiveMassTransitMessage>(activity => activity.MessageType = typeof(UserCredentialsAdded))
                             .Then<SetVariable>(activity =>
                             {
                                 activity.VariableName = "LastUpdateTimestamp";
@@ -60,8 +60,8 @@ namespace TelusHeathPack.Workflows
                             .Then<CancelScheduledMassTransitMessage>(activity => activity.TokenId = new JavaScriptExpression<Guid>("return ScheduleTokenId"))
                             .Then("ScheduleExpire");
 
-                        fork.When("Cart-Expired")
-                            .Then<ReceiveMassTransitMessage>(activity => activity.MessageType = typeof(CartExpiredEvent))
+                        fork.When("User-Expired")
+                            .Then<ReceiveMassTransitMessage>(activity => activity.MessageType = typeof(UserExpiredEvent))
                             .Then<SetVariable>(activity =>
                             {
                                 activity.VariableName = "IsExpired";
@@ -69,21 +69,21 @@ namespace TelusHeathPack.Workflows
                             })
                             .Then<SendMassTransitMessage>(activity =>
                             {
-                                activity.Message = new JavaScriptExpression<CartRemovedEvent>("return { cartId: correlationId() };");
-                                activity.EndpointAddress = new Uri($"{options.Host}/shopping_cart_service");
-                                activity.MessageType = typeof(CartRemovedEvent);
+                                activity.Message = new JavaScriptExpression<UserRemovedEvent>("return { alias: correlationId() };");
+                                activity.EndpointAddress = new Uri($"{_options.Host}/user_service");
+                                activity.MessageType = typeof(UserRemovedEvent);
                             })
                             .Then("Join");
 
-                        fork.When("OrderSubmitted")
-                            .Then<ReceiveMassTransitMessage>(activity => activity.MessageType = typeof(OrderSubmitted))
-                            .Then<SetVariable>(activity =>
-                            {
-                                activity.VariableName = "LastUpdateTimestamp";
-                                activity.ValueExpression = new JavaScriptExpression<DateTime>("lastResult().Timestamp");
-                            })
-                            .Then<CancelScheduledMassTransitMessage>(activity => activity.TokenId = new JavaScriptExpression<Guid>("return ScheduleTokenId"))
-                            .Then("Join");
+                        // fork.When("OrderSubmitted")
+                        //     .Then<ReceiveMassTransitMessage>(activity => activity.MessageType = typeof(OrderSubmitted))
+                        //     .Then<SetVariable>(activity =>
+                        //     {
+                        //         activity.VariableName = "LastUpdateTimestamp";
+                        //         activity.ValueExpression = new JavaScriptExpression<DateTime>("lastResult().Timestamp");
+                        //     })
+                        //     .Then<CancelScheduledMassTransitMessage>(activity => activity.TokenId = new JavaScriptExpression<Guid>("return ScheduleTokenId"))
+                        //     .Then("Join");
                     })
                 .Join(x => x.Mode = Join.JoinMode.WaitAny).WithName("Join");
         }

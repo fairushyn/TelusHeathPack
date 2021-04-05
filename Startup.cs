@@ -4,6 +4,7 @@ using Elsa.Activities.Email.Extensions;
 using Elsa.Activities.Http.Extensions;
 using Elsa.Activities.MassTransit.Extensions;
 using Elsa.Activities.Timers.Extensions;
+using Elsa.Dashboard.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,6 +13,7 @@ using NodaTime;
 using Quartz;
 using Quartz.Impl;
 using Quartz.Logging;
+using TelusHeathPack.Configurations;
 using TelusHeathPack.Controllers;
 using TelusHeathPack.Services;
 using TelusHeathPack.Workflows;
@@ -29,8 +31,14 @@ namespace TelusHeathPack
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services
-                .AddControllers();
+            services.AddControllers();
+            services.AddMvc();
+            
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = Configuration.GetConnectionString("Redis");
+                options.InstanceName = string.Empty;
+            });
 
             var scheduler = CreateScheduler();
             var massTransitBuilder = new RabbitMqSchedulerMassTransitBuilder(scheduler)
@@ -40,12 +48,13 @@ namespace TelusHeathPack
 
             services
                 .AddElsa()
+                .AddElsaDashboard()
                 .AddHttpActivities()
                 .AddTimerActivities(options => options.Configure(x => x.SweepInterval = Duration.FromSeconds(10)))
                 .AddEmailActivities(options => options.Bind(Configuration.GetSection("Smtp")))
                 .AddMassTransitSchedulingActivities(massTransitBuilder, options => options.Bind(Configuration.GetSection("MassTransit:RabbitMq:MessageSchedule")))
-                .AddWorkflow<CartTrackingWorkflow>()
-                .AddScoped<ICarts, Carts>()
+                .AddWorkflow<UserTrackingWorkflow>()
+                .AddScoped<IUsers, Users>()
                 .AddSingleton(scheduler)
                 .AddSingleton<IHostedService, QuartzHostedService>(); // Add a hosted service to stat and stop the quartz scheduler
 
@@ -67,6 +76,9 @@ namespace TelusHeathPack
 
                 return scheduler;
             }
+            
+            // Configuring Swagger
+            SwaggerConfiguration.ConfigureSwagger(services);
         }
 
         public void Configure(IApplicationBuilder app, IHostEnvironment env)
@@ -74,12 +86,22 @@ namespace TelusHeathPack
             if (env.IsDevelopment())
                 app.UseDeveloperExceptionPage();
 
+            app.UseStaticFiles();
+
             app
                 .UseStaticFiles()
                 .UseHttpActivities()
                 .UseRouting()
-                .UseEndpoints(endpoints => endpoints.MapControllers())
-                .UseWelcomePage();
+                .UseEndpoints(endpoints => endpoints.MapControllers());
+                //.UseWelcomePage();
+            
+            app.UseSwagger();
+            // Serving swagger to an endpoint
+            app.UseSwaggerUI(config =>
+            {
+                config.SwaggerEndpoint("/swagger/v1/swagger.json", "Telus API");
+                config.RoutePrefix = string.Empty;
+            });
         }
 
         private class QuartzConsoleLogProvider : ILogProvider

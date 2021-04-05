@@ -12,7 +12,7 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "api/cart",
+      "launchUrl": "",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
@@ -20,7 +20,7 @@
     "TelusHeathPack": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "api/cart",
+      "launchUrl": "",
       "applicationUrl": "http://localhost:59862",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"

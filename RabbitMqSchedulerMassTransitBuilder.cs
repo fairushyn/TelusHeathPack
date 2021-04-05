@@ -42,27 +42,27 @@ namespace TelusHeathPack
 
                 cfg.UseMessageScheduler(options.MessageSchedule.SchedulerAddress);
 
-                cfg.ReceiveEndpoint("shopping_cart_service", ep =>
-                {
-                    ep.ConfigureConsumer<CartRemovedConsumer>(serviceProvider);
-                });
+                // cfg.ReceiveEndpoint("user_service", ep =>
+                // {
+                //     ep.ConfigureConsumer<UserRemovedConsumer>(serviceProvider);
+                // });
 
-                cfg.ReceiveEndpoint("shopping_cart_state", ep =>
+                cfg.ReceiveEndpoint("user_state", ep =>
                 {
                     ep.PrefetchCount = 16;
 
                     ep.UseMessageRetry(r => r.Interval(2, 100));
 
                     // Consume all workflow messages from the same queue.
-                    ep.ConfigureWorkflowConsumer<CartCreated>(serviceProvider);
-                    ep.ConfigureWorkflowConsumer<CartItemAdded>(serviceProvider);
-                    ep.ConfigureWorkflowConsumer<OrderSubmitted>(serviceProvider);
-                    ep.ConfigureWorkflowConsumer<CartExpiredEvent>(serviceProvider);
+                    ep.ConfigureWorkflowConsumer<UserCreated>(serviceProvider);
+                    // ep.ConfigureWorkflowConsumer<UserCredentialsAdded>(serviceProvider);
+                    // ep.ConfigureWorkflowConsumer<OrderSubmitted>(serviceProvider);
+                    // ep.ConfigureWorkflowConsumer<UserExpiredEvent>(serviceProvider);
                 });
 
                 // Should use external process scheduler service
                 // https://github.com/MassTransit/MassTransit/tree/develop/src/Samples/MassTransit.QuartzService
-                cfg.ReceiveEndpoint("sample_quartz_scheduler", e =>
+                cfg.ReceiveEndpoint("quartz_scheduler", e =>
                 {
                     // For MT4.0, prefetch must be set for Quartz prior to anything else
                     e.PrefetchCount = 1;
@@ -85,13 +85,13 @@ namespace TelusHeathPack
             configurator.AddConsumer<CancelScheduledMessageConsumer>();
 
             // configure workflow consumers
-            configurator.AddWorkflowConsumer<CartCreated>();
-            configurator.AddWorkflowConsumer<CartItemAdded>();
-            configurator.AddWorkflowConsumer<OrderSubmitted>();
-            configurator.AddWorkflowConsumer<CartExpiredEvent>();
+            configurator.AddWorkflowConsumer<UserCreated>();
+            configurator.AddWorkflowConsumer<UserCredentialsAdded>();
+           // configurator.AddWorkflowConsumer<OrderSubmitted>();
+            configurator.AddWorkflowConsumer<UserExpiredEvent>();
 
             // host fake service consumers
-            configurator.AddConsumer<CartRemovedConsumer>();
+            // configurator.AddConsumer<UserRemovedConsumer>();
         }
     }
 }
