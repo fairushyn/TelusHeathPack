@@ -31,24 +31,23 @@ namespace TelusHeathPack.Controllers
         public async Task<User> Add(AddUser model)
         {
             var user = await _redisCache.GetRecordAsync<User>(model.Alias);
-            if (user == null)
-            {
-                user = new User
-                {
-                    Alias = model.Alias,
-                    TestNumber = GenerateNumber()
-                };
-
-                await _redisCache.SetRecordAsync(user.Alias, user); 
-             
-                await _sender.Send(new UserCreated
-                {
-                    Alias = user.Alias,
-                    TestNumber = user.TestNumber,
-                    Timestamp = DateTime.UtcNow
-                });
-            }
+            if (user != null) return user;
             
+            user = new User
+            {
+                Alias = model.Alias,
+                TestNumber = GenerateNumber()
+            };
+
+            await _redisCache.SetRecordAsync(user.Alias, user); 
+             
+            await _sender.Send(new UserCreated
+            {
+                Alias = user.Alias,
+                TestNumber = user.TestNumber,
+                Timestamp = DateTime.UtcNow
+            });
+
             return user;
         }
 
