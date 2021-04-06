@@ -9,37 +9,30 @@ using TelusHeathPack.Models;
 
 namespace TelusHeathPack.Activities
 {
-    public class CreatePerson : Activity
+    public class RequestCredentials : Activity
     {
         private readonly IWorkflowExpressionEvaluator _expressionEvaluator;
 
-        public CreatePerson(IWorkflowExpressionEvaluator expressionEvaluator)
+        public RequestCredentials(IWorkflowExpressionEvaluator expressionEvaluator)
         {
             _expressionEvaluator = expressionEvaluator;
         }
-
-        public WorkflowExpression<string> TitleExpression
+        
+        public WorkflowExpression<string> Alias
         {
             get => GetState<WorkflowExpression<string>>();
             set => SetState(value);
         }
-
-        public WorkflowExpression<int> AgeExpression
-        {
-            get => GetState<WorkflowExpression<int>>();
-            set => SetState(value);
-        }
-
+        
         protected override async Task<ActivityExecutionResult> OnExecuteAsync(WorkflowExecutionContext context, CancellationToken cancellationToken)
         {
-            var name = await _expressionEvaluator.EvaluateAsync(TitleExpression, context, cancellationToken);
-            var age = await _expressionEvaluator.EvaluateAsync(AgeExpression, context, cancellationToken);
-            var person = new Person { FullName = name, Age = age };
+            var ttt = Output;
+            var name = await _expressionEvaluator.EvaluateAsync(Alias, context, cancellationToken);
+            var person = new UserInfo { FullName = name};
 
             Output.SetVariable("Person", person);
             Output.SetVariable("FullName", person.FullName);
-            Output.SetVariable("Age", person.Age);
-            
+
             return Done();
         }
     }

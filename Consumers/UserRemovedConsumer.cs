@@ -2,22 +2,23 @@ using System.Threading.Tasks;
 using MassTransit;
 using TelusHeathPack.Controllers;
 using TelusHeathPack.Messages;
+using TelusHeathPack.Services.User;
 
 namespace TelusHeathPack.Consumers
 {
     public class UserRemovedConsumer : IConsumer<UserRemovedEvent>
     {
-        private readonly IUsers _users;
+        private readonly IUsersService _usersService;
 
-        public UserRemovedConsumer(IUsers users)
+        public UserRemovedConsumer(IUsersService usersService)
         {
-            _users = users;
+            _usersService = usersService;
         }
 
         public Task Consume(ConsumeContext<UserRemovedEvent> context)
         {
             if (context.Message.Alias is not null)
-                _users.Remove(context.Message.Alias);
+                _usersService.Remove(context.Message.Alias);
             return Task.CompletedTask;
         }
     }

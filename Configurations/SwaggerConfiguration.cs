@@ -8,7 +8,6 @@ namespace TelusHeathPack.Configurations
         public static void ConfigureSwagger(IServiceCollection services)
         {
             // TODO services.AddSwaggerExamplesFromAssemblyOf<ModelExample>();
-
             services.AddSwaggerGen(config =>
             {
                 config.SwaggerDoc("v1", new OpenApiInfo { Title = "Telus API", Version = "v1" });

@@ -14,9 +14,13 @@ using Quartz;
 using Quartz.Impl;
 using Quartz.Logging;
 using TelusHeathPack.Activities;
+using TelusHeathPack.Business;
 using TelusHeathPack.Configurations;
 using TelusHeathPack.Controllers;
+using TelusHeathPack.Extensions;
 using TelusHeathPack.Services;
+using TelusHeathPack.Services.Quartz;
+using TelusHeathPack.Services.User;
 using TelusHeathPack.Workflows;
 
 namespace TelusHeathPack
@@ -34,6 +38,9 @@ namespace TelusHeathPack
         {
             services.AddControllers();
             services.AddMvc();
+            
+            // Configuring Business
+            services.AddScoped<IUserBusiness, UserBusiness>();
             
             services.AddStackExchangeRedisCache(options =>
             {
@@ -54,9 +61,10 @@ namespace TelusHeathPack
                 .AddTimerActivities(options => options.Configure(x => x.SweepInterval = Duration.FromSeconds(10)))
                 .AddEmailActivities(options => options.Bind(Configuration.GetSection("Smtp")))
                 .AddMassTransitSchedulingActivities(massTransitBuilder, options => options.Bind(Configuration.GetSection("MassTransit:RabbitMq:MessageSchedule")))
-                .AddActivity<CreatePerson>()
+                .AddActivity<RequestCredentials>()
+                .AddUserActivities()
                 .AddWorkflow<UserTrackingWorkflow>()
-                .AddScoped<IUsers, Users>()
+                .AddScoped<IUsersService, UsersServiceService>()
                 .AddSingleton(scheduler)
                 .AddSingleton<IHostedService, QuartzHostedService>(); // Add a hosted service to stat and stop the quartz scheduler
 

@@ -1,9 +1,11 @@
 using System;
+using System.Security.Policy;
 using Elsa.Activities;
 using Elsa.Activities.ControlFlow.Activities;
 using Elsa.Activities.MassTransit.Activities;
 using Elsa.Expressions;
 using Elsa.Scripting.JavaScript;
+using Elsa.Scripting.Liquid;
 using Elsa.Services;
 using Elsa.Services.Models;
 using Microsoft.Extensions.Options;
@@ -36,17 +38,21 @@ namespace TelusHeathPack.Workflows
                     activity.VariableName = "IsExpired";
                     activity.ValueExpression = new JavaScriptExpression<bool>("false");
                 })
-                .Then<CreatePerson>(
+                .Then<ActivateUser>(
                     x =>
                     {
-                        x.TitleExpression =  new LiteralExpression<string>("did:one37:56d6048b-466c-43e9-bcfa-9fb1a0950010");
-                        x.AgeExpression = new LiteralExpression<int>("1704733784");
-                    }).WithName("CreatePerson")
+                        x.Alias =  new LiteralExpression<string>("did:one37:56d6048b-466c-43e9-bcfa-9fb1a0950010");
+                    })
+                .Then<RequestCredentials>(
+                    x =>
+                    {
+                        x.Alias =  new LiteralExpression<string>("did:one37:56d6048b-466c-43e9-bcfa-9fb1a0950010");
+                    })
                 .Then<SetVariable>(
                     x =>
                     {
                         x.VariableName = "Person";
-                        x.ValueExpression = new JavaScriptExpression<Person>("CreatePerson.Person");
+                        x.ValueExpression = new JavaScriptExpression<UserInfo>("CreatePerson.Person");
                     })
                 .Then<SetVariable>(
                     x =>

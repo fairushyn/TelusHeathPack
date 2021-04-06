@@ -1,0 +1,113 @@
+{
+    "activities": [
+        {
+            "id": "b00283bc-05df-4503-bf28-d02b982be3b1",
+            "type": "Signaled",
+            "left": 28,
+            "top": 22,
+            "state": {
+                "signal": {
+                    "expression": "RegisterUser",
+                    "syntax": "Literal"
+                },
+                "name": "",
+                "title": "Register User",
+                "description": "Trigger the workflow when this signal is received."
+            },
+            "blocking": false,
+            "executed": false,
+            "faulted": false
+        },
+        {
+            "id": "d5d9dec0-ef02-4711-a80a-903d4783a4cc",
+            "type": "CreateUser",
+            "left": 89,
+            "top": 256,
+            "state": {
+                "alias": {
+                    "expression": "{{ Input.RegistrationModel.Alias }}",
+                    "syntax": "Liquid"
+                },
+                "name": "CreateUser",
+                "title": "Create User",
+                "description": ""
+            },
+            "blocking": false,
+            "executed": false,
+            "faulted": false
+        },
+        {
+            "id": "d24476a1-9f97-4312-b035-99ed1f8b9fbe",
+            "type": "ActivateUser",
+            "left": 400,
+            "top": 247,
+            "state": {
+                "alias": {
+                    "expression": "{{ Activities.CreateUser.User.Alias }}",
+                    "syntax": "Liquid"
+                },
+                "name": "Activate User",
+                "title": "Activate User",
+                "description": ""
+            },
+            "blocking": false,
+            "executed": false,
+            "faulted": false
+        },
+        {
+            "id": "2f540b6c-b133-4f16-b4ee-87f64cfa634c",
+            "type": "DeleteUser",
+            "left": 701,
+            "top": 253,
+            "state": {
+                "userId": {
+                    "expression": "{{ Activities.CreateUser.User.Id }}",
+                    "syntax": "Liquid"
+                },
+                "name": "",
+                "title": "Delete User",
+                "description": "Delete the created user."
+            },
+            "blocking": false,
+            "executed": false,
+            "faulted": false
+        },
+        {
+            "id": "3f8bf909-9568-4adf-aa2a-898045658989",
+            "type": "Finish",
+            "left": 1015,
+            "top": 208,
+            "state": {},
+            "blocking": false,
+            "executed": false,
+            "faulted": false
+        }
+    ],
+    "connections": [
+        {
+            "sourceActivityId": "b00283bc-05df-4503-bf28-d02b982be3b1",
+            "destinationActivityId": "d5d9dec0-ef02-4711-a80a-903d4783a4cc",
+            "outcome": "Done"
+        },
+        {
+            "sourceActivityId": "2f540b6c-b133-4f16-b4ee-87f64cfa634c",
+            "destinationActivityId": "3f8bf909-9568-4adf-aa2a-898045658989",
+            "outcome": "Done"
+        },
+        {
+            "sourceActivityId": "d24476a1-9f97-4312-b035-99ed1f8b9fbe",
+            "destinationActivityId": "d24476a1-9f97-4312-b035-99ed1f8b9fbe",
+            "outcome": "Not Found"
+        },
+        {
+            "sourceActivityId": "d5d9dec0-ef02-4711-a80a-903d4783a4cc",
+            "destinationActivityId": "d24476a1-9f97-4312-b035-99ed1f8b9fbe",
+            "outcome": "Done"
+        },
+        {
+            "sourceActivityId": "d24476a1-9f97-4312-b035-99ed1f8b9fbe",
+            "destinationActivityId": "2f540b6c-b133-4f16-b4ee-87f64cfa634c",
+            "outcome": "Done"
+        }
+    ]
+}

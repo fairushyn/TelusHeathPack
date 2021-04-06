@@ -3,25 +3,25 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Quartz;
 
-namespace TelusHeathPack.Services
+namespace TelusHeathPack.Services.Quartz
 {
     public class QuartzHostedService : IHostedService
     {
-        private readonly IScheduler scheduler;
+        private readonly IScheduler _scheduler;
 
         public QuartzHostedService(IScheduler scheduler)
         {
-            this.scheduler = scheduler;
+            _scheduler = scheduler;
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-            await scheduler.Start(cancellationToken);
+            await _scheduler.Start(cancellationToken);
         }
 
         public async Task StopAsync(CancellationToken cancellationToken)
         {
-            await scheduler.Shutdown(true, cancellationToken);
+            await _scheduler.Shutdown(true, cancellationToken);
         }
     }
 }

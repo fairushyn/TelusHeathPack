@@ -86,9 +86,9 @@ namespace TelusHeathPack
 
             // configure workflow consumers
             configurator.AddWorkflowConsumer<UserCreated>();
-            configurator.AddWorkflowConsumer<UserCredentialsAdded>();
+            // configurator.AddWorkflowConsumer<UserCredentialsAdded>();
            // configurator.AddWorkflowConsumer<OrderSubmitted>();
-            configurator.AddWorkflowConsumer<UserExpiredEvent>();
+            // configurator.AddWorkflowConsumer<UserExpiredEvent>();
 
             // host fake service consumers
             // configurator.AddConsumer<UserRemovedConsumer>();
