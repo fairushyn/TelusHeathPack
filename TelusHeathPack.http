@@ -2,11 +2,11 @@
 // https://marketplace.visualstudio.com/items?itemName=humao.rest-client
 
 
-GET http://localhost:59862/api/user
+GET http://localhost:59862/users/get
 
 ####
 
-POST http://localhost:59862/api/user
+POST http://localhost:59862/users/register
 Content-Type: application/json
 
 {
@@ -14,7 +14,3 @@ Content-Type: application/json
 }
 
 ####
-
-POST http://localhost:59862/api/user/submit
-
-###

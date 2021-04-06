@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using MassTransit;
-using TelusHeathPack.Controllers;
 using TelusHeathPack.Messages;
 using TelusHeathPack.Services.User;
 

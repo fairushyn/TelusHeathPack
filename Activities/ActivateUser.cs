@@ -6,8 +6,6 @@ using Elsa.Services;
 using Elsa.Services.Models;
 using System.Threading;
 using System.Threading.Tasks;
-using Elsa.Activities.Workflows.Extensions;
-using Elsa.Models;
 using Microsoft.Extensions.Caching.Distributed;
 using TelusHeathPack.Extensions;
 using TelusHeathPack.Models;

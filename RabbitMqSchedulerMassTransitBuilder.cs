@@ -5,7 +5,6 @@ using MassTransit;
 using MassTransit.ExtensionsDependencyInjectionIntegration;
 using MassTransit.QuartzIntegration;
 using Quartz;
-using TelusHeathPack.Consumers;
 using TelusHeathPack.Messages;
 using Elsa.Activities.MassTransit;
 using Microsoft.Extensions.DependencyInjection;
